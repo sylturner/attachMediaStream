@@ -1,8 +1,6 @@
-!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.attachMediaStream=e():"undefined"!=typeof global?global.attachMediaStream=e():"undefined"!=typeof self&&(self.attachMediaStream=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(e){if("function"==typeof bootstrap)bootstrap("attachmediastream",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeAttachMediaStream=e}else"undefined"!=typeof window?window.attachMediaStream=e():global.attachMediaStream=e()})(function(){var define,ses,bootstrap,module,exports;
+return (function(e,t,n){function i(n,s){if(!t[n]){if(!e[n]){var o=typeof require=="function"&&require;if(!s&&o)return o(n,!0);if(r)return r(n,!0);throw new Error("Cannot find module '"+n+"'")}var u=t[n]={exports:{}};e[n][0].call(u.exports,function(t){var r=e[n][1][t];return i(r?r:t)},u,u.exports)}return t[n].exports}var r=typeof require=="function"&&require;for(var s=0;s<n.length;s++)i(n[s]);return i})({1:[function(require,module,exports){
 module.exports = function (stream, el, options) {
-  // simple browser sniff
-  var ua = window.navigator.userAgent.toLowerCase();
-  if(ua.indexOf('firefox') !== -1 || ua.indexOf('chrome') !== -1){
     var URL = window.URL;
     var opts = {
         autoplay: true,
@@ -40,61 +38,8 @@ module.exports = function (stream, el, options) {
     }
 
     return element;
-  }
-  else {
-    // make this work with the Temasys plugin for IE and Safari
-    var element = el;
-    stream.enableSoundTracks(true);
-    if (element.nodeName.toLowerCase() !== 'audio') {
-      var elementId = element.id.length === 0 ? Math.random().toString(36).slice(2) : element.id;
-      if (!element.isTemWebRTCPlugin || !element.isTemWebRTCPlugin()) {
-        var frag = document.createDocumentFragment();
-        var temp = document.createElement('div');
-        var classHTML = element.className ? 'class="' + element.className + '" ' :  '';
-        temp.innerHTML = '<object id="' + elementId + '" ' + 
-          classHTML + 'type="application/x-temwebrtcplugin">' + 
-          '<param name="pluginId" value="' + elementId + '" /> ' + 
-          '<param name="pageId" value="' + window.TemPageId + '" /> ' + 
-          '<param name="windowless" value="true" /> ' + 
-          '<param name="streamId" value="' + stream.id + '" /> ' + 
-          '</object>';
-        while (temp.firstChild) {
-          frag.appendChild(temp.firstChild);
-        }
-
-        var rectObject = element.getBoundingClientRect();
-        element.parentNode.insertBefore(frag, element);
-        frag = document.getElementById(elementId);
-        frag.width = rectObject.width + 'px'; 
-        frag.height = rectObject.height + 'px';
-        element.parentNode.removeChild(element);
-
-      } else {
-        var children = element.children;
-        for (var i = 0; i !== children.length; ++i) {
-          if (children[i].name === 'streamId') {
-            children[i].value = stream.id;
-            break;
-          }
-        }
-        element.setStreamId(stream.id);
-      }
-
-      var newElement = document.getElementById(elementId);
-      newElement.onclick = element.onclick ? element.onclick : function(arg) {};
-      newElement._TemOnClick = function(id) {
-        var arg = {srcElement: document.getElementById(id)};
-        newElement.onclick(arg);
-      };
-      return newElement;
-    } else { // is audio element
-      // The sound was enabled, there is nothing to do here
-      return element;
-    }
-  }
 };
 
-},{}]},{},[1])
-(1)
+},{}]},{},[1])(1)
 });
 ;

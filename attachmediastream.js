@@ -1,7 +1,4 @@
 module.exports = function (stream, el, options) {
-  // simple browser sniff
-  var ua = window.navigator.userAgent.toLowerCase();
-  if(ua.indexOf('firefox') !== -1 || ua.indexOf('chrome') !== -1){
     var URL = window.URL;
     var opts = {
         autoplay: true,
@@ -39,56 +36,4 @@ module.exports = function (stream, el, options) {
     }
 
     return element;
-  }
-  else {
-    // make this work with the Temasys plugin for IE and Safari
-    var element = el;
-    stream.enableSoundTracks(true);
-    if (element.nodeName.toLowerCase() !== 'audio') {
-      var elementId = element.id.length === 0 ? Math.random().toString(36).slice(2) : element.id;
-      if (!element.isTemWebRTCPlugin || !element.isTemWebRTCPlugin()) {
-        var frag = document.createDocumentFragment();
-        var temp = document.createElement('div');
-        var classHTML = element.className ? 'class="' + element.className + '" ' :  '';
-        temp.innerHTML = '<object id="' + elementId + '" ' + 
-          classHTML + 'type="application/x-temwebrtcplugin">' + 
-          '<param name="pluginId" value="' + elementId + '" /> ' + 
-          '<param name="pageId" value="' + window.TemPageId + '" /> ' + 
-          '<param name="windowless" value="true" /> ' + 
-          '<param name="streamId" value="' + stream.id + '" /> ' + 
-          '</object>';
-        while (temp.firstChild) {
-          frag.appendChild(temp.firstChild);
-        }
-
-        var rectObject = element.getBoundingClientRect();
-        element.parentNode.insertBefore(frag, element);
-        frag = document.getElementById(elementId);
-        frag.width = rectObject.width + 'px'; 
-        frag.height = rectObject.height + 'px';
-        element.parentNode.removeChild(element);
-
-      } else {
-        var children = element.children;
-        for (var i = 0; i !== children.length; ++i) {
-          if (children[i].name === 'streamId') {
-            children[i].value = stream.id;
-            break;
-          }
-        }
-        element.setStreamId(stream.id);
-      }
-
-      var newElement = document.getElementById(elementId);
-      newElement.onclick = element.onclick ? element.onclick : function(arg) {};
-      newElement._TemOnClick = function(id) {
-        var arg = {srcElement: document.getElementById(id)};
-        newElement.onclick(arg);
-      };
-      return newElement;
-    } else { // is audio element
-      // The sound was enabled, there is nothing to do here
-      return element;
-    }
-  }
 };
